@@ -6,19 +6,17 @@ export interface SimulationRequest {
   days: number
 }
 
+// In production, set VITE_API_URL in Vercel dashboard to your deployed backend
+// e.g. https://your-backend.railway.app
+// Locally falls back to http://127.0.0.1:8000
+const API_BASE = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000"
+
 export async function runSimulation(data: SimulationRequest) {
-
-  const response = await fetch("http://127.0.0.1:8000/simulate", {
+  const response = await fetch(`${API_BASE}/simulate`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify(data)
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
   })
-
-  if (!response.ok) {
-    throw new Error("Simulation failed")
-  }
-
+  if (!response.ok) throw new Error("Simulation failed")
   return response.json()
-}
+}
