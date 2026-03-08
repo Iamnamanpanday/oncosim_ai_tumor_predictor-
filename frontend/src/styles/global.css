@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Default theme tokens (overridden at runtime by ThemeContext) ── */
+:root {
+  /* Shared structural tokens */
+  --surface:    #0f1420;
+  --card:       #131928;
+  --border:     #1e2a3a;
+  --muted:      #4a5568;
+  --muted-fg:   #8892a4;
+  --text:       #e8edf5;
+  --text-dim:   #a0aec0;
+
+  /* Theme accent tokens (default = Crimson) — set by ThemeContext */
+  --accent:           #dc143c;
+  --accent-light:     #ff4d70;
+  --accent-soft:      rgba(220,20,60,0.08);
+  --accent-dim:       rgba(220,20,60,0.15);
+  --accent-glow:      rgba(220,20,60,0.4);
+  --accent-border:    rgba(220,20,60,0.25);
+  --accent-border-hi: rgba(220,20,60,0.35);
+  --accent-dark:      #8b0000;
+
+  --bg-base:          #080b12;
+  --bg-sidebar-from:  #0a0f1e;
+  --bg-sidebar-to:    #080b12;
+  --hero-gradient:    linear-gradient(135deg, #ffffff 0%, #e8edf5 40%, #ff4d70 100%);
+  --chart-line:       #dc143c;
+  --chart-area:       rgba(220,20,60,0.35);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  background-color: var(--bg-base);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track  { background: var(--surface); }
+::-webkit-scrollbar-thumb  { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+
+/* Range slider — uses accent vars */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  outline: none;
+  cursor: pointer;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--accent-glow);
+  transition: box-shadow 0.2s;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 14px var(--accent-glow);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Gradient text utility — uses live theme accent */
+.gradient-text {
+  background: var(--hero-gradient);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Card glass effect */
+.glass-card {
+  background: rgba(19, 25, 40, 0.8);
+  border: 1px solid rgba(30, 42, 58, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Accent pulse ring — used in Live badge */
+@keyframes accent-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent-glow); }
+  50%       { box-shadow: 0 0 0 6px transparent; }
+}
+.accent-pulse { animation: accent-pulse 2.5s ease-in-out infinite; }
