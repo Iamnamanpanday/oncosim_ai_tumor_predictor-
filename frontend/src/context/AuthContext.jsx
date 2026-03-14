@@ -42,13 +42,6 @@ export function AuthProvider({ children }) {
 
   useEffect(() => {
     const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (!session) {
-        const { data, error } = await supabase.auth.signInAnonymously()
-        if (error) {
-          console.error("Guest login failed:", error)
-        }
-      }
       setLoading(false)
     }
 
@@ -71,9 +64,9 @@ export function AuthProvider({ children }) {
     return data
   }
 
-  // ── Email / Password sign-in ───────────────────────────────────────────────
-  async function signIn(email, password) {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+  // ── Guest sign-in ───────────────────────────────────────────────────────
+  async function guestSignIn() {
+    const { data, error } = await supabase.auth.signInAnonymously()
     if (error) throw error
     return data
   }
@@ -97,7 +90,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, role, loading, signUp, signIn, logout, chooseRole, resetRole }}>
+    <AuthContext.Provider value={{ user, role, loading, signUp, signIn, guestSignIn, logout, chooseRole, resetRole }}>
       {children}
     </AuthContext.Provider>
   )

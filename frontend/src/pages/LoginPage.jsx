@@ -34,7 +34,7 @@ function InputField({ label, type, value, onChange, placeholder, icon: Icon, sho
 }
 
 export default function LoginPage() {
-  const { signIn, signUp } = useAuth()
+  const { signIn, signUp, guestSignIn } = useAuth()
 
   const [mode,     setMode    ] = useState("signin")   // "signin" | "signup"
   const [email,    setEmail   ] = useState("")
@@ -44,23 +44,13 @@ export default function LoginPage() {
   const [error,    setError   ] = useState(null)
   const [success,  setSuccess ] = useState(null)
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    if (!email || !password) { setError("Please fill in both fields."); return }
+  async function handleGuestLogin() {
     setLoading(true); setError(null); setSuccess(null)
     try {
-      if (mode === "signin") {
-        await signIn(email, password)
-        // Auth state change in context will re-render App to role selector
-      } else {
-        await signUp(email, password)
-        setSuccess("Account created! Check your email to confirm, then sign in below.")
-        setMode("signin"); setPassword("")
-      }
+      await guestSignIn()
+      // Auth state change will re-render to role selector
     } catch (err) {
-      if (err.message?.includes("Invalid login credentials")) setError("Wrong email or password.")
-      else if (err.message?.includes("already registered"))   setError("This email is already registered. Sign in instead.")
-      else setError(err.message ?? "Something went wrong. Please try again.")
+      setError(err.message ?? "Guest login failed. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -128,6 +118,23 @@ export default function LoginPage() {
               </motion.button>
             ))}
           </div>
+
+          {/* Guest Login Button */}
+          <motion.button
+            onClick={handleGuestLogin}
+            disabled={loading}
+            className="w-full py-3 rounded-xl text-sm font-semibold transition-all mb-6"
+            style={{
+              background: "linear-gradient(135deg, var(--accent), var(--accent-dark))",
+              color: "white",
+              border: "1px solid var(--accent-border)",
+              boxShadow: "0 0 20px var(--accent-glow)",
+            }}
+            whileHover={{ scale: 1.02, boxShadow: "0 0 30px var(--accent-glow)" }}
+            whileTap={{ scale: 0.98 }}
+          >
+            {loading ? "Signing in..." : "Try as Guest"}
+          </motion.button>
 
           {/* Title */}
           <AnimatePresence mode="wait">
