@@ -111,6 +111,7 @@ function ProfileMenu() {
 }
 
 export default function ResearcherDashboard() {
+  const { user } = useAuth()
   const [result,        setResult      ] = useState(null)
   const [lastParams,    setLastParams  ] = useState(null)
   const [compareResult, setCompareResult] = useState(null)
@@ -139,6 +140,10 @@ export default function ResearcherDashboard() {
   }
 
   function handleSaveRun() {
+    if (!user) {
+      addToast("Sign in to save your data", "error")
+      return
+    }
     if (!result || !lastParams) return
     const run = { id: `run-${Date.now()}`, timestamp: new Date().toLocaleString(), params: lastParams, metrics: result.metrics, curve: result.curve }
     const updated = [run, ...savedRuns]; setSavedRuns(updated); persistRuns(updated)

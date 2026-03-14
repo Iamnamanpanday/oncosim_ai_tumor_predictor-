@@ -1,9 +1,11 @@
+import { Routes, Route, Navigate } from "react-router-dom"
 import { useAuth } from "./context/AuthContext"
 import LoginPage from "./pages/LoginPage"
 import RoleSelectorPage from "./pages/RoleSelectorPage"
 import ResearcherDashboard from "./pages/dashboards/ResearcherDashboard"
 import ClinicianDashboard  from "./pages/dashboards/ClinicianDashboard"
 import StudentDashboard    from "./pages/dashboards/StudentDashboard"
+import LandingPage from "./pages/LandingPage"
 import AIChatbot from "./components/AIChatbot"
 import { motion } from "framer-motion"
 import { Dna } from "lucide-react"
@@ -36,13 +38,17 @@ function App() {
   const { user, role, loading } = useAuth()
 
   if (loading) return <LoadingScreen />
-  if (!user)   return <LoginPage />
-  if (!role)   return <RoleSelectorPage />
+  
+  if (user && !role) return <RoleSelectorPage />
 
   const Dashboard = ROLE_DASHBOARDS[role] ?? ResearcherDashboard
   return (
     <>
-      <Dashboard />
+      <Routes>
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/app" element={<Dashboard />} />
+        <Route path="/login" element={user ? <Navigate to="/app" /> : <LoginPage />} />
+      </Routes>
       {/* Floating AI chatbot — available on all dashboards */}
       <AIChatbot />
     </>
