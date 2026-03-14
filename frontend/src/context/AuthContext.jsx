@@ -41,12 +41,18 @@ export function AuthProvider({ children }) {
   const [loading, setLoading  ] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      const u = session?.user ?? null
-      setUser(u)
-      if (u) setRoleState(localStorage.getItem(ROLE_KEY(u.id)) ?? null)
+    const initAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (!session) {
+        const { data, error } = await supabase.auth.signInAnonymously()
+        if (error) {
+          console.error("Guest login failed:", error)
+        }
+      }
       setLoading(false)
-    })
+    }
+
+    initAuth()
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       const u = session?.user ?? null
